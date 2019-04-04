@@ -2,12 +2,17 @@ const {
     ApolloServer
 } = require('apollo-server');
 
-const t = require('./typeDefs');
-const r = require('./resolvers');
-
+const typeDefs = require('./typeDefs');
+const resolvers = require('./resolvers');
+const {
+    findOrCreateUser
+} = require('./controllers/userController');
 const mongoose = require('mongoose');
 
 require('dotenv').config();
+
+
+
 console.log(process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true
@@ -16,8 +21,32 @@ mongoose.connect(process.env.MONGO_URI, {
 ).catch(error => console.error(error));
 
 const server = new ApolloServer({
-    typeDefs: t,
-    resolvers: r
+    typeDefs,
+    resolvers,
+    context: async ({
+        req
+    }) => {
+        console.log('en server');
+        let authToken = null;
+        let currentUser = null;
+        try {
+            authToken = req.headers.authorization;
+            console.log('authtoken', authToken);
+            if (authToken) {
+
+                currentUser = await findOrCreateUser(authToken);
+                console.log('authtossken', currentUser );
+
+            }
+        } catch (err) {
+            console.error(`Unable to auth user with tkn${authToken}`)
+        }
+        console.log('authtossWWssken', currentUser );
+        return {
+            
+            currentUser
+        }
+    }
 });
 
 server.listen().then(({

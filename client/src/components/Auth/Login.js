@@ -12,15 +12,11 @@ import {
 } from 'graphql-request';
 import Context from '../../context';
 
+import Typography from '@material-ui/core/Typography';
 
-const ME = `{
-  me{
-   _id,
-   email,
-   name,
-   picture   
-    } 
- }`
+import {ME_QUERY} from '../../graphql/queries';
+
+
 
 const Login = ({
   classes
@@ -30,26 +26,53 @@ const Login = ({
     dispatch
   } = useContext(Context);
   const onSuccess = async googleUser => {
-    const idToken = googleUser.getAuthResponse().id_token;
-    console.log(idToken);
-    const client = new GraphQLClient('http://localhost:4000/graphql', {
-      headers: {
-        authorization: idToken
-      }
-    })
-    const data = await client.request(ME);
 
-    console.log(data);
-    dispatch({type: "LOGIN", payload: data.me});
+    try {
+      const idToken = googleUser.getAuthResponse().id_token;
+      console.log(idToken);
+      const client = new GraphQLClient('http://localhost:4000/graphql', {
+        headers: {
+          authorization: idToken
+        }
+      })
+      const { me } = await client.request(ME_QUERY);
+  
+      dispatch({type: "LOGIN", payload: me});
+    }
+    catch(err) {
+      onFailure(err)
+    }
+   
   };
-  return <GoogleLogin clientId = "770971871331-4hgt46cdr9p27l98hfu0aa9mfmr5kkam.apps.googleusercontent.com"
+
+  const onFailure = err => {
+    console.error('Error', err);
+  }
+
+  return (
+    <div className={classes.root}>
+
+    <Typography
+    component="h1"
+    variant="h3"
+    gutterBottom
+    noWrap
+    style={{color: "rgb(66, 133, 244)"}}
+    >
+      Hi
+    </Typography>
+   <GoogleLogin clientId = "770971871331-4hgt46cdr9p27l98hfu0aa9mfmr5kkam.apps.googleusercontent.com"
   onSuccess = {
     onSuccess
   }
+  onFailure={onFailure}
   isSignedIn = {
     true
   }
+  theme="dark"
   />;
+  </div>
+  );
 };
 
 const styles = {

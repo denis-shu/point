@@ -38,6 +38,7 @@ const Login = ({
       const { me } = await client.request(ME_QUERY);
   
       dispatch({type: "LOGIN", payload: me});
+      dispatch({type: "IS_LOGGED_IN", payload: googleUser.isSignedIn()});
     }
     catch(err) {
       onFailure(err)
@@ -69,6 +70,7 @@ const Login = ({
   isSignedIn = {
     true
   }
+  buttonText="Login GGG"
   theme="dark"
   />;
   </div>

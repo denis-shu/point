@@ -1,15 +1,31 @@
-import React, {useState} from "react";
-import ReactMapGL, {NavigationControl} from "react-map-gl";
+import React, {useState, useEffect} from "react";
+import ReactMapGL, {NavigationControl, Marker} from "react-map-gl";
 import { withStyles } from "@material-ui/core/styles";
+import PinIcon from './PinIcon';
 
 const initviewport = {
   latitude: 37.7577,
-  longtitude: -122.4376,
+  longitude: -122.4376,
   zoom: 7
 }
 
 const Map = ({ classes }) => {
-  const [viewport, setViewport] = useState(initviewport)
+  const [viewport, setViewport] = useState(initviewport);
+  const [userPosition, setUserPosition] = useState(null);
+  useEffect(()=>{
+    getUserPosition();
+  }, []);
+
+  const  getUserPosition = ()=> {
+    if("geolocation" in navigator){
+      navigator.geolocation.getCurrentPosition(position => {
+        const {latitude, longitude} = position.coords
+        console.log(position.coords);
+        setViewport({ ...viewport, latitude, longitude})
+        setUserPosition({latitude, longitude})
+      });
+    }
+  };
   return (
   <div className={classes.root}>
   <ReactMapGL
@@ -24,6 +40,17 @@ const Map = ({ classes }) => {
     <NavigationControl   onViewportChange={newViewport => setViewport(newViewport) }
 />
     </div>
+
+   {userPosition && (
+     <Marker
+       latitude = {userPosition.latitude} 
+       longitude = {userPosition.longitude}
+       offsetLeft = {-19}
+       offsetTop = {-37}
+       >
+       <PinIcon size={41} color="red"/>
+     </Marker>
+   )}
     </ReactMapGL>
   </div>
   

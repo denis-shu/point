@@ -1,6 +1,9 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 
+import TextField from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+
 const CreatePin = ({ classes }) => {
   return <div>CreatePin</div>;
 };

@@ -3,9 +3,32 @@ import { withStyles } from "@material-ui/core/styles";
 
 import TextField from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import AddAPhotoIcon from "@material-ui/icons/AddAPhotoTwoTone";
+import LandscapeIcon from "@material-ui/icons/LandscapeOutlined";
+import ClearIcon from "@material-ui/icons/Clear";
+import SaveIcon from "@material-ui/icons/SaveTwoTone";
 
 const CreatePin = ({ classes }) => {
-  return <div>CreatePin</div>;
+  return (
+    <form className={classes.form}>
+      <Typography className={classes.alignCenter}
+      component="h2"
+      variant="h4"
+      color="secondary"
+      >
+      <LandscapeIcon className={classes.iconLarge}/>
+
+      </Typography>
+      <div>
+        <TextField name='title'
+         label='Title'
+         placeholder='Insert  title'
+         />
+         <input/>
+      </div>
+    </form>
+  )
 };
 
 const styles = theme => ({
